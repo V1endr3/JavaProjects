@@ -8,14 +8,25 @@
     <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
 
         <restConfiguration bindingMode="auto" component="jetty" port="8080"/>
-        <rest bindingMode="off">
-            <get path="/hello">
+        <rest bindingMode="json_xml">
+            <post path="/hello">
                 <to uri="direct:hello"/>
-            </get>
+            </post>
         </rest>
 
         <route>
             <from uri="direct:hello"/>
+            <setBody>
+                <constant>
+                    <![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<route>
+    <from uri="direct:hello"/>
+    <to uri="log:end"/>
+</route>
+]]>
+                </constant>
+            </setBody>
             <to uri="log:end"/>
         </route>
 
