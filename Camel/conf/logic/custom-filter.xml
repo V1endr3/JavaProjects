@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <bean id="filterProcessor" class="org.example.processor.FilterProcessor">
+        <property name="language" value="simple"/>
+        <property name="expression" value="${jsonpath($.id)} == 1"/>
+    </bean>
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <restConfiguration bindingMode="auto" component="jetty" port="8080"/>
+        <rest produces="application/json">
+            <get path="/hello">
+                <to uri="direct:hello"/>
+            </get>
+        </rest>
+        <route>
+            <from uri="direct:hello"/>
+            <split>
+                <simple>${body}</simple>
+                <process ref="filterProcessor"/>
+                <to uri="log:filtered"/>
+            </split>
+            <to uri="log:end"/>
+        </route>
+    </camelContext>
+</beans>

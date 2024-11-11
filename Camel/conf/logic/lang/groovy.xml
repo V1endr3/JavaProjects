@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         ttp://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/lang
+         https://www.springframework.org/schema/lang/spring-lang.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <lang:groovy id="groovyTest">
+        <lang:inline-script>
+            <![CDATA[
+package groovy
+import org.apache.camel.AggregationStrategy
+import org.apache.camel.Exchange
+class MyStrategy implements AggregationStrategy {
+    @Override Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
+        Object newBody = newExchange.getIn().getBody();
+        ArrayList<Object> list = null;
+        if (oldExchange == null) {
+            list = new ArrayList<Object>();
+            list.add(newBody);
+            newExchange.getIn().setBody(list);
+            return newExchange;
+        } else {
+            list = oldExchange.getIn().getBody(ArrayList.class);
+            list.add(newBody); return oldExchange;
+        }
+    }
+}
+]]>
+        </lang:inline-script>
+    </lang:groovy>
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="timer:init?delay=0&amp;period=24h"/>
+
+            <to uri="log:hello-log"/>
+        </route>
+    </camelContext>
+</beans>

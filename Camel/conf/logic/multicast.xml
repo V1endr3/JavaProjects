@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="timer:init?delay=0&amp;period=24h"/>
+            <setBody>
+                <simple>${date:now:yyyyMMddHHmmss}: main-thread: [${threadId}, ${threadName}]</simple>
+            </setBody>
+            <process ref="#class:org.example.debugger.DebuggerProcessor"/>
+            <to uri="log:multicast-pre"/>
+            <multicast synchronous="true" shareUnitOfWork="true" stopOnException="false">
+                <step>
+                    <setBody>
+                        <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
+                    </setBody>
+                    <to uri="log:endpoint1"/>
+                </step>
+                <step>
+                    <delay>
+                        <constant>1000</constant>
+                    </delay>
+                    <setBody>
+                        <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
+                    </setBody>
+                    <process ref="#class:org.example.debugger.ExceptionGenProcessor"/>
+                    <to uri="log:endpoint2"/>
+                </step>
+                <step>
+                    <setBody>
+                        <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
+                    </setBody>
+                    <to uri="log:endpoint3"/>
+                </step>
+            </multicast>
+            <setBody>
+                <simple>${date:now:yyyyMMddHHmmss}: main-thread: [${threadId}, ${threadName}]</simple>
+            </setBody>
+            <process ref="#class:org.example.debugger.DebuggerProcessor"/>
+            <to uri="log:end"/>
+        </route>
+    </camelContext>
+</beans>

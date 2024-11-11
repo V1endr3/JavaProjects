@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext id="threads-test" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="cron:tab?schedule=0/1 * * * * ?" description="定时触发器"/>
+            <threads id="testThread"
+                     description="线程开始"
+                     poolSize="3"
+                     maxPoolSize="5"
+                     keepAliveTime="5"
+                     timeUnit="SECONDS"
+                     maxQueueSize="3"/>
+            <setBody><simple>${date:now:yyyyMMddHHmmss} ==> ${threadId}:${threadName}</simple></setBody>
+            <delay><constant>5000</constant></delay>
+            <to uri="log:record"/>
+        </route>
+    </camelContext>
+</beans>

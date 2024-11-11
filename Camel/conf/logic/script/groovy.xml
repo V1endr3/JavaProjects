@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="timer:init?delay=0&amp;period=24h"/>
+            <process ref="#class:org.example.debugger.DebuggerProcessor"/>
+            <script description="Python脚本测试">
+                <groovy><![CDATA[
+System.out.println(exchange);
+]]></groovy>
+            </script>
+            <to uri="log:hello-log"/>
+        </route>
+    </camelContext>
+</beans>

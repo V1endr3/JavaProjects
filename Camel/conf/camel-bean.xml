@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="cron:tab?schedule=0/5+*+*+*+*+?"/>
+<!--            <to uri="rest:post:anything?host=httpbin.org:80&amp;bridgeEndpoint=true"/>-->
+<!--            <unmarshal><json/></unmarshal>-->
+            <setBody>
+                <simple>Hello</simple>
+            </setBody>
+            <to uri="log:hello-log"/>
+        </route>
+    </camelContext>
+</beans>

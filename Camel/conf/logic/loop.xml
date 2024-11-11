@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="timer:init?delay=0&amp;period=24h"/>
+            <setHeader name="RUN-COUNTER">
+                <constant>0</constant>
+            </setHeader>
+            <loop doWhile="true">
+                <simple>${header.RUN-COUNTER} &lt;= 5</simple>
+                <to uri="direct:in-loop"/>
+            </loop>
+            <process ref="#class:org.example.debugger.DebuggerProcessor"/>
+            <to uri="log:end"/>
+        </route>
+
+        <route>
+            <from uri="direct:in-loop"/>
+            <setHeader name="RUN-COUNTER">
+                <simple>${header.RUN-COUNTER}++</simple>
+            </setHeader>
+            <setBody>
+                <simple>${header.RUN-COUNTER}</simple>
+            </setBody>
+            <to uri="log:loop-index"/>
+        </route>
+    </camelContext>
+</beans>
