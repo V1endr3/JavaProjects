@@ -5,6 +5,7 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
+
     <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
 
         <restConfiguration bindingMode="auto" component="jetty" port="8080"/>
@@ -15,20 +16,13 @@
         </rest>
 
         <route>
-            <from uri="direct:hello"/>
-            <setBody>
-                <constant>
-                    <![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<route>
-    <from uri="direct:hello"/>
-    <to uri="log:end"/>
-</route>
-]]>
-                </constant>
-            </setBody>
+            <from uri="timer:init?delay=0&amp;period=24h"/>
             <to uri="log:end"/>
         </route>
 
+        <route>
+            <from uri="direct:hello"/>
+            <to uri="log:end"/>
+        </route>
     </camelContext>
 </beans>

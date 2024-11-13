@@ -5,16 +5,19 @@
          http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring
          http://camel.apache.org/schema/spring/camel-spring.xsd">
-
+    <bean id="myExecutorService" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+        <property name="corePoolSize" value="5"/>
+        <property name="maxPoolSize" value="5"/>
+    </bean>
     <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
         <route>
             <from uri="timer:init?delay=0&amp;period=24h"/>
             <setBody>
                 <simple>${date:now:yyyyMMddHHmmss}: main-thread: [${threadId}, ${threadName}]</simple>
             </setBody>
-            <process ref="#class:org.example.debugger.DebuggerProcessor"/>
             <to uri="log:multicast-pre"/>
-            <multicast synchronous="true" shareUnitOfWork="true" stopOnException="false">
+            <multicast synchronous="true" shareUnitOfWork="true" stopOnException="false"
+                       executorService="#myExecutorService">
                 <step>
                     <setBody>
                         <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
