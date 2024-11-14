@@ -10,7 +10,7 @@
 
 
         <route>
-<!--            <from uri="quartz:quartz-group/quartz-timer?trigger.repeatInterval=2000&amp;trigger.misfireInstruction=4"/>-->
+            <!--            <from uri="quartz:quartz-group/quartz-timer?trigger.repeatInterval=2000&amp;trigger.misfireInstruction=4"/>-->
             <from uri="quartz:quartz-group/quartz-cron?cron=0/2+*+*+*+*+?&amp;trigger.misfireInstruction=2"/>
             <setBody>
                 <simple>${date:now:yyyy-MM-dd HH:mm:ss} ==> ${threadId}:${threadName}</simple>

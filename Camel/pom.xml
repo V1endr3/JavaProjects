@@ -91,6 +91,10 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-cron</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-quartz</artifactId>
+        </dependency>
         <!-- script dep -->
         <dependency>
             <groupId>org.apache.camel</groupId>
