@@ -4,16 +4,42 @@
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-
+    <bean id="multicast-agg" class="org.example.aggregate.MulticastAggregator"/>
 
     <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
-
-
         <route>
-<!--            <from uri="quartz:quartz-group/quartz-timer?trigger.repeatInterval=2000&amp;trigger.misfireInstruction=4"/>-->
-            <from uri="quartz:quartz-group/quartz-cron?cron=0/2+*+*+*+*+?&amp;trigger.misfireInstruction=2"/>
+            <!--<from uri="quartz:quartz-group/quartz-timer?trigger.repeatInterval=2000&amp;trigger.misfireInstruction=4"/>-->
+            <from uri="timer:init?delay=0&amp;period=24h"/>
             <setBody>
-                <simple>${date:now:yyyy-MM-dd HH:mm:ss} ==> ${threadId}:${threadName}</simple>
+                <simple>${date:now:yyyyMMddHHmmss}: main-thread: [${threadId}, ${threadName}]</simple>
+            </setBody>
+            <to uri="log:multicast-pre"/>
+            <multicast synchronous="true" shareUnitOfWork="true" stopOnException="false"
+                       aggregationStrategy="multicast-agg">
+                <step id="step0">
+                    <setBody>
+                        <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
+                    </setBody>
+                    <to uri="log:endpoint1"/>
+                </step>
+                <step id="step1">
+                    <delay>
+                        <constant>1000</constant>
+                    </delay>
+                    <setBody>
+                        <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
+                    </setBody>
+                    <to uri="log:endpoint2"/>
+                </step>
+                <step id="step2">
+                    <setBody>
+                        <simple>${date:now:yyyyMMddHHmmss}: ${stepId}: [${threadId}, ${threadName}] ==> ${body}</simple>
+                    </setBody>
+                    <to uri="log:endpoint3"/>
+                </step>
+            </multicast>
+            <setBody>
+                <simple>${date:now:yyyyMMddHHmmss}: main-thread: [${threadId}, ${threadName}]</simple>
             </setBody>
             <to uri="log:end"/>
         </route>
