@@ -5,16 +5,28 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
+    <bean id="redis" class="org.springframework.data.redis.connection.RedisStandaloneConfiguration">
+        <property name="hostName" value="1.2.3.4"/>
+        <property name="port" value="6379"/>
+        <property name="password">
+            <bean class="org.springframework.data.redis.connection.RedisPassword" factory-method="of">
+                <property name="passwordAsString" value="123456"/>
+            </bean>
+        </property>
+    </bean>
 
     <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
         <restConfiguration bindingMode="auto" component="jetty" port="8080"/>
-        <rest bindingMode="off" consumes="application/x-www-form-urlencoded">
+        <rest bindingMode="auto" consumes="application/x-www-form-urlencoded" produces="application/json">
             <post path="/hello/{id}/user/{name}">
                 <to uri="direct:hello"/>
             </post>
         </rest>
         <route>
             <from uri="direct:hello"/>
+            <unmarshal>
+                <json/>
+            </unmarshal>
             <process ref="debugger"/>
             <to uri="https://httpbin.org:443/anything?bridgeEndpoint=true"/>
             <to uri="log:end"/>

@@ -8,6 +8,8 @@ public class MainApplication {
         Main main = new Main();
         FileSystemXmlApplicationContext applicationContext = new FileSystemXmlApplicationContext("file:Camel/conf/test.xml");
         main.setApplicationContext(applicationContext);
+
         main.run();
+        main.getCamelContext().setDevConsole(true);
     }
 }
