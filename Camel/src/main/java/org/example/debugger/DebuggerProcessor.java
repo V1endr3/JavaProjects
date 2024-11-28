@@ -7,6 +7,7 @@ public class DebuggerProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         var headers = exchange.getIn().getHeaders();
+        var body = exchange.getIn().getBody();
         return;
     }
 }

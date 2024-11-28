@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
+
+    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
+        <endpoint id="file-endpoint" uri="file:Camel/temp">
+            <property key="charset" value="UTF-8"/>
+            <property key="fileName" value="test.csv"/>
+            <property key="noop" value="true"/>
+        </endpoint>
+        <route>
+            <from uri="file-endpoint"/>
+            <unmarshal>
+                <csv delimiter="$" ignoreEmptyLines="true" quoteDisabled="false" quoteMode="ALL_NON_NULL"/>
+            </unmarshal>
+            <process ref="debugger"/>
+            <to uri="log:end"/>
+        </route>
+    </camelContext>
+</beans>

@@ -6,18 +6,18 @@
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
 
-    <camelContext id="demo-rest" xmlns="http://camel.apache.org/schema/spring">
-        <restConfiguration bindingMode="auto" component="jetty" port="8080"/>
-        <rest bindingMode="off" consumes="application/x-www-form-urlencoded">
-            <post path="/hello/{id}/user/{name}">
-                <to uri="direct:hello"/>
-            </post>
-        </rest>
-        <route>
-            <from uri="direct:hello"/>
-            <process ref="debugger"/>
-            <to uri="https://httpbin.org:443/anything?bridgeEndpoint=true"/>
-            <to uri="log:end"/>
+    <camelContext id="demo-test" xmlns="http://camel.apache.org/schema/spring">
+        <route id="112233">
+            <from uri="timer:init?delay=0&amp;period=24h"/>
+            <setHeader name="name">
+                <groovy>body.dqjovih1jo2</groovy>
+            </setHeader>
+            <onCompletion>
+                <setBody>
+                    <simple>FAILURE_ROUTE_ID: ${exchangeProperty['FAILURE_ROUTE_ID']}\nException: ${exchangeProperty['EXCEPTION_CAUGHT']}</simple>
+                </setBody>
+                <process ref="debugger"/>
+            </onCompletion>
         </route>
     </camelContext>
 </beans>

@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <camel.version>4.8.1</camel.version>
         <mysql.connector.version>8.4.0</mysql.connector.version>
-        <log4j2.version>2.0.16</log4j2.version>
+        <logback.version>1.5.12</logback.version>
     </properties>
 
     <dependencyManagement>
@@ -88,6 +88,10 @@
         <!-- dataformat -->
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-csv</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-jackson</artifactId>
         </dependency>
         <dependency>
@@ -119,9 +123,14 @@
 
         <!-- else dependencies -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${log4j2.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
