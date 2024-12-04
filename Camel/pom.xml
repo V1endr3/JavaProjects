@@ -85,6 +85,14 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jsonpath</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-opensearch</artifactId>
+        </dependency>
         <!-- dataformat -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -120,6 +128,11 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-python</artifactId>
         </dependency>
+        <!-- monitoring -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-micrometer-prometheus</artifactId>
+        </dependency>
 
         <!-- else dependencies -->
         <dependency>
@@ -139,25 +152,25 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-dependency-plugin</artifactId>-->
+    <!--                <version>${maven-dependency-plugin.version}</version>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <id>copy-dependencies</id>-->
+    <!--                        <phase>package</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>copy-dependencies</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <outputDirectory>${project.basedir}/lib</outputDirectory>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 </project>

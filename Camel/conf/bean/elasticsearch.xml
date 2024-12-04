@@ -5,9 +5,22 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
+    <bean id="opensearch" class="org.apache.camel.component.es.ElasticsearchComponent">
+        <property name="hostAddresses" value="1.2.3.4:9200"/>
+        <property name="user" value="elastic"/>
+        <property name="password" value="xxx"/>
+    </bean>
     <camelContext id="demo-test" xmlns="http://camel.apache.org/schema/spring">
+        <endpoint id="es-endpoint" uri="opensearch:clusterName">
+
+        </endpoint>
+
         <route id="route-demo">
             <from uri="timer:init?delay=0&amp;period=24h"/>
+            <setHeader name="operation">
+                <constant>Ping</constant>
+            </setHeader>
+            <to uri="ref:es-endpoint"/>
             <to uri="log:end"/>
             <onCompletion>
                 <process ref="debugger"/>

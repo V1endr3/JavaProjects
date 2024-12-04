@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Compatible with ElasticSearch under 8 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
+    <bean id="opensearch" class="org.apache.camel.component.opensearch.OpensearchComponent">
+        <property name="hostAddresses" value="1.2.3.4:9200"/>
+        <property name="user" value="elastic"/>
+        <property name="password" value="xxxx"/>
+    </bean>
     <camelContext id="demo-test" xmlns="http://camel.apache.org/schema/spring">
+        <endpoint id="es-endpoint" uri="opensearch:clusterName">
+
+        </endpoint>
+
         <route id="route-demo">
             <from uri="timer:init?delay=0&amp;period=24h"/>
+            <setHeader name="operation">
+                <constant>Ping</constant>
+            </setHeader>
+            <to uri="ref:es-endpoint"/>
             <to uri="log:end"/>
             <onCompletion>
                 <process ref="debugger"/>
