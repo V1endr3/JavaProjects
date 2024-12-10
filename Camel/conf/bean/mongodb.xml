@@ -5,19 +5,26 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
+    <bean id="mongoClient" class="com.mongodb.client.MongoClients" factory-method="create">
+        <constructor-arg name="connectionString"
+                         value="mongodb://usr:pwd@host:port/db?authSource=authDb"/>
+    </bean>
 
     <camelContext id="demo-test" xmlns="http://camel.apache.org/schema/spring">
-        <endpoint id="cassandra" uri="cql:1.2.3.4:9042/system_auth">
-            <property key="username" value="cassandra"/>
-            <property key="password" value="xxxx"/>
+        <endpoint id="mongoEndpoint" uri="mongodb:mongoClient">
+            <property key="database" value="db"/>
+            <property key="collection" value="col"/>
         </endpoint>
 
         <route id="route-demo">
             <from uri="timer:init?delay=0&amp;period=24h"/>
-            <setHeader name="CamelCqlQuery">
-                <constant><![CDATA[select * from roles]]></constant>
+            <setHeader name="CamelMongoDbOperation">
+                <constant>getColStats</constant>
             </setHeader>
-            <to uri="ref:cassandra"/>
+            <!--            <setBody>-->
+            <!--                <constant>getDbStats</constant>-->
+            <!--            </setBody>-->
+            <to uri="ref:mongoEndpoint"/>
             <to uri="log:end"/>
             <onCompletion>
                 <process ref="debugger"/>

@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
-    <camelContext id="demo-test" xmlns="http://camel.apache.org/schema/spring">
-        <route id="route-demo">
-            <from uri="timer:init?delay=0&amp;period=24h"/>
-            <to uri="log:end"/>
-            <onCompletion>
-                <process ref="debugger"/>
-            </onCompletion>
-        </route>
-    </camelContext>
-</beans>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://camel.apache.org/schema/spring
+            https://camel.apache.org/schema/spring/camel-spring.xsd">
+    <route id="demo-route">
+        <from uri="timer:init?delay=0&amp;period=24h"/>
+        <to uri="log:end"/>
+    </route>
+</camel>
