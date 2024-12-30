@@ -138,6 +138,10 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-opensearch</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-kudu</artifactId>
+        </dependency>
 
         <!-- dataformat -->
         <dependency>

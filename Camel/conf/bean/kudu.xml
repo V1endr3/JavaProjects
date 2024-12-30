@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns="http://camel.apache.org/schema/spring">
+    <beans xmlns="http://www.springframework.org/schema/beans">
+        <bean id="kuduBuilder" class="org.apache.kudu.client.KuduClient.KuduClientBuilder">
+            <constructor-arg name="masterAddresses" value="host:port" type="String"/>
+        </bean>
+        <bean id="kuduClient" class="org.apache.kudu.client.KuduClient" factory-bean="kuduBuilder"
+              factory-method="build"/>
+        <bean id="kuduComponent" class="org.apache.camel.component.kudu.KuduComponent">
+            <property name="kuduClient" ref="kuduClient"/>
+        </bean>
+    </beans>
+    <route id="demo-route">
+        <from uri="timer:init?delay=0&amp;period=24h"/>
+        <to uri="kuduComponent:host:port/table?operation=SCAN"/>
+        <to uri="log:end"/>
+    </route>
+</camel>

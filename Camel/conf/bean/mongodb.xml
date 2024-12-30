@@ -1,34 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
-    <bean id="mongoClient" class="com.mongodb.client.MongoClients" factory-method="create">
-        <constructor-arg name="connectionString"
-                         value="mongodb://usr:pwd@host:port/db?authSource=authDb"/>
-    </bean>
-
-    <camelContext id="demo-test" xmlns="http://camel.apache.org/schema/spring">
-        <endpoint id="mongoEndpoint" uri="mongodb:mongoClient">
-            <property key="database" value="db"/>
-            <property key="collection" value="col"/>
-        </endpoint>
-
-        <route id="route-demo">
-            <from uri="timer:init?delay=0&amp;period=24h"/>
-            <setHeader name="CamelMongoDbOperation">
-                <constant>getColStats</constant>
-            </setHeader>
-            <!--            <setBody>-->
-            <!--                <constant>getDbStats</constant>-->
-            <!--            </setBody>-->
-            <to uri="ref:mongoEndpoint"/>
-            <to uri="log:end"/>
-            <onCompletion>
-                <process ref="debugger"/>
-            </onCompletion>
-        </route>
-    </camelContext>
-</beans>
+<camel xmlns="http://camel.apache.org/schema/spring">
+    <beans xmlns="http://www.springframework.org/schema/beans">
+        <bean id="debugger" class="org.example.debugger.DebuggerProcessor"/>
+        <bean id="mongoClient" class="com.mongodb.client.MongoClients" factory-method="create">
+            <constructor-arg name="connectionString"
+                             value="mongodb://user:pwd@host:port/db?authSource=authDb"/>
+        </bean>
+    </beans>
+    <route id="route-demo">
+        <from uri="timer:init?delay=0&amp;period=24h"/>
+        <setHeader name="CamelMongoDbOperation">
+            <constant>findAll</constant>
+        </setHeader>
+        <to uri="mongodb:mongoClient?database=db&amp;collection=collection"/>
+        <to uri="log:end"/>
+        <onCompletion>
+            <process ref="debugger"/>
+        </onCompletion>
+    </route>
+</camel>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://camel.apache.org/schema/spring"
-       xsi:schemaLocation="http://camel.apache.org/schema/spring
-            https://camel.apache.org/schema/spring/camel-spring.xsd">
-    <route id="demo-route">
+<camel xmlns="http://camel.apache.org/schema/spring">
+    <route id="route-demo">
         <from uri="timer:init?delay=0&amp;period=24h"/>
+        <setBody>
+            <simple>${system.biz.date}</simple>
+        </setBody>
         <to uri="log:end"/>
     </route>
 </camel>
