@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <camel xmlns="http://camel.apache.org/schema/spring">
+    <beans xmlns="http://www.springframework.org/schema/beans">
+        <bean id="opensearchComp-213213213" class="org.apache.camel.component.opensearch.OpensearchComponent">
+            <property name="hostAddresses" value="10.0.113.66:29200"/>
+            <property name="user" value="elastic"/>
+            <property name="password" value="miGnbAvjJRB9FGyVB"/>
+        </bean>
+    </beans>
     <route id="route-demo">
         <from uri="timer:init?delay=0&amp;period=24h"/>
-        <setBody>
-            <simple>${system.biz.date}</simple>
-        </setBody>
+        <setHeader name="operation">
+            <constant>Ping</constant>
+        </setHeader>
+        <to uri="opensearchComp-213213213:test"/>
         <to uri="log:end"/>
     </route>
 </camel>

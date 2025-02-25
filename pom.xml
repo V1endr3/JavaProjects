@@ -25,6 +25,7 @@
         <module>Camel</module>
         <module>Mybatis</module>
         <module>Guava</module>
+        <module>Langchain4j</module>
     </modules>
 
     <dependencyManagement>
