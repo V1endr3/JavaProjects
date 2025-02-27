@@ -15,6 +15,8 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <spring.version>6.2.3</spring.version>
+        <spring-boot.version>3.4.3</spring-boot.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <lombok.version>1.18.34</lombok.version>
         <junit.version>5.11.4</junit.version>
