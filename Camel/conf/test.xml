@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <camel xmlns="http://camel.apache.org/schema/spring">
-    <beans xmlns="http://www.springframework.org/schema/beans">
-        <bean id="opensearchComp-213213213" class="org.apache.camel.component.opensearch.OpensearchComponent">
-            <property name="hostAddresses" value="10.0.113.66:29200"/>
-            <property name="user" value="elastic"/>
-            <property name="password" value="miGnbAvjJRB9FGyVB"/>
-        </bean>
-    </beans>
+    <!--    <restConfiguration bindingMode="auto" component="jetty" port="8080" host="0.0.0.0"/>-->
+    <!--    <rest bindingMode="off">-->
+    <!--        <get path="/hello">-->
+    <!--            <to uri="direct:hello"/>-->
+    <!--        </get>-->
+    <!--    </rest>-->
     <route id="route-demo">
-        <from uri="timer:init?delay=0&amp;period=24h"/>
-        <setHeader name="operation">
-            <constant>Ping</constant>
-        </setHeader>
-        <to uri="opensearchComp-213213213:test"/>
-        <to uri="log:end"/>
+        <!--        <from uri="direct:hello"/>-->
+        <!--        <to uri="log:end"/>-->
+        <!--        <from uri="scheduler://first?timeUnit=SECONDS&amp;delay=50000"/>-->
+        <from uri="scheduler://first?scheduler=quartz&amp;scheduler.cron=* * * * * ?"/>
+        <!--        <from uri="sql://first?scheduler=quartz&amp;scheduler.cron=0 0/5 * * * ?"/>-->
+        <setBody>
+            <constant>******************************************************************************************
+            </constant>
+        </setBody>
+        <to uri="log:first"/>
     </route>
 </camel>
