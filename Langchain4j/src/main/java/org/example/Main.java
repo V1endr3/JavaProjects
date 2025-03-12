@@ -21,8 +21,8 @@ public class Main {
 
         ChatLanguageModel chatModel = OpenAiChatModel.builder()
                 .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
-                .apiKey("sk-xxxx")
-                .modelName("qwen-plus")
+                .apiKey("sk-589e0f6beb2649b2a6f0417e9faab495")
+                .modelName("qwq-plus")
                 .logRequests(true)
                 .logResponses(true)
                 .build();
