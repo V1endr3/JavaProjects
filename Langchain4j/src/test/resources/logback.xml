@@ -1,0 +1,40 @@
+<configuration>
+    <!-- 定义日志文件的保存路径 -->
+    <property name="LOG_PATH" value="logs"/>
+    <property name="LOG_ARCHIVE" value="${LOG_PATH}/archive"/>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%-5level] [%thread] %d{yyyy-MM-dd HH:mm:ss.SSS} %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/application.log</file>
+        <encoder>
+            <pattern>[%-5level] [%thread] %d{yyyy-MM-dd HH:mm:ss.SSS} %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 每天生成一个日志文件，旧的日志文件按日期保存在 logs/archive/ 目录下 -->
+            <fileNamePattern>${LOG_ARCHIVE}/application-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!-- 单个日志文件最大大小 500MB -->
+            <maxFileSize>50MB</maxFileSize>
+            <!-- 保留 7 天的日志文件 -->
+            <maxHistory>7</maxHistory>
+            <!-- 总日志文件总大小限制 10GB -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <!-- 触发日志文件滚动的大小条件 -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>50MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <!--        <appender-ref ref="FILE"/>-->
+    </root>
+</configuration>
