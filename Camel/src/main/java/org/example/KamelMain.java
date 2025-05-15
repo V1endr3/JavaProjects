@@ -9,7 +9,6 @@ public class KamelMain {
         KameletMain main = new KameletMain("orchestration");
         main.configure().withRoutesIncludePattern("file:Camel/conf/test.xml");
         main.run(args);
-        
-        log.info("Endpoints size: {}", main.getCamelContext().getEndpoints().size());
-    }
+
+        log.info("Endpoints size: {}", main.getCamelContext().getEndpoints().size());}
 }

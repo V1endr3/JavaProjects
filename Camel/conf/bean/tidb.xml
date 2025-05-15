@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns="http://camel.apache.org/schema/spring">
+    <bean name="dataSourceBean-test" type="org.apache.commons.dbcp2.BasicDataSource">
+        <properties>
+            <!-- compatible with mysql -->
+            <property key="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+            <property key="url" value="jdbc:mysql://host:4000/testdb"/>
+            <property key="username" value="root"/>
+            <property key="password" value="new_password_112233"/>
+            <property key="testOnBorrow" value="true"/>
+        </properties>
+    </bean>
+    <route id="route-trigger">
+        <from id="trigger" uri="scheduler://trigger?delay=1&amp;timeUnit=HOURS"/>
+        <to uri="sql:select * from employees?dataSource=%23dataSourceBean-test&amp;outputType=SelectList"/>
+    </route>
+</camel>

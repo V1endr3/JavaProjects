@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns="http://camel.apache.org/schema/spring">
+    <route id="route-demo">
+        <from uri="scheduler://first?timeUnit=SECONDS&amp;delay=50000&amp;initialDelay=5"/>
+        <setBody>
+            <constant>
+                hello, world!
+            </constant>
+        </setBody>
+        <to id="xxx" uri="pulsar:persistent://test_tenant/test_namespace/test_topic?serviceUrl=pulsar://host:6650"/>
+        <to uri="log:first"/>
+    </route>
+    <route id="pulsar-consume">
+        <from uri="pulsar:persistent://test_tenant/test_namespace/test_topic?serviceUrl=pulsar://host:6650"/>
+        <to uri="log:message-content"/>
+    </route>
+</camel>

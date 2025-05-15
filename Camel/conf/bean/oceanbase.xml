@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <beans xmlns="http://www.springframework.org/schema/beans">
+        <bean id="dataSourceBean-test" class="org.apache.commons.dbcp2.BasicDataSource">
+            <!-- compatible with mysql -->
+            <property name="driverClassName">
+                <value>com.mysql.cj.jdbc.Driver</value>
+            </property>
+            <property name="url">
+                <value>jdbc:mysql://host:2881/demo</value>
+            </property>
+            <property name="username">
+                <value>root</value>
+            </property>
+            <property name="testOnBorrow">
+                <value>true</value>
+            </property>
+        </bean>
+    </beans>
+    <route id="route-trigger">
+        <from id="trigger" uri="scheduler://trigger?delay=1&amp;timeUnit=HOURS"/>
+        <to uri="sql:select * from test_user_info?dataSource=%23dataSourceBean-test&amp;outputType=SelectList"/>
+    </route>
+</camel>

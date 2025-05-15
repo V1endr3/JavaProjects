@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns="http://camel.apache.org/schema/spring">
+    <bean name="dataSourceBean-test" type="org.apache.commons.dbcp2.BasicDataSource">
+        <properties>
+            <!-- compatible with mysql -->
+            <property key="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+            <property key="url" value="jdbc:mysql://host:56577/polar_demo"/>
+            <property key="username" value="polardbx_root"/>
+            <property key="password" value="xxxxxxx"/>
+            <property key="testOnBorrow" value="true"/>
+        </properties>
+    </bean>
+    <route id="route-trigger">
+        <from id="trigger" uri="scheduler://trigger?delay=1&amp;timeUnit=HOURS"/>
+        <to uri="sql:select * from polar_tbl_demo?dataSource=%23dataSourceBean-test&amp;outputType=SelectList"/>
+    </route>
+</camel>
