@@ -32,6 +32,7 @@
         <module>Langchain4j</module>
         <module>Logback</module>
         <module>Spring</module>
+        <module>SpringAI</module>
     </modules>
 
     <dependencyManagement>
