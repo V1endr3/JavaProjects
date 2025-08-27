@@ -15,6 +15,12 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Dependency Version Management -->
+        <spring.framework.version>6.2.10</spring.framework.version>
+        <spring.boot.version>3.5.5</spring.boot.version>
+        <mybatis-flex.version>1.11.1</mybatis-flex.version>
+        <hikari.cp.version>7.0.2</hikari.cp.version>
+        <jdbc.postgres.version>42.7.7</jdbc.postgres.version>
         <mzt.bizlog.version>3.0.6</mzt.bizlog.version>
         <logbook.version>3.12.2</logbook.version>
     </properties>
@@ -43,6 +49,23 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Data access provider -->
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+            <version>${mybatis-flex.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${jdbc.postgres.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikari.cp.version}</version>
+        </dependency>
         <!-- BIZ-LOG -->
         <dependency>
             <groupId>io.github.mouzt</groupId>
@@ -53,6 +76,12 @@
             <groupId>org.zalando</groupId>
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>${logbook.version}</version>
+        </dependency>
+        <!-- Test scope dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @EnableLogRecord(tenant = "org.example")
 @SpringBootApplication
-public class Application {
+public class MainApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(MainApplication.class, args);
     }
+
 }
