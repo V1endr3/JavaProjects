@@ -27,14 +27,9 @@
 
     <modules>
         <module>Camel</module>
-        <module>Mybatis</module>
-        <module>Guava</module>
         <module>Langchain4j</module>
-        <module>Logback</module>
         <module>Spring</module>
         <module>SpringAI</module>
-        <module>Higress</module>
-        <module>Logbook</module>
     </modules>
 
     <dependencyManagement>
