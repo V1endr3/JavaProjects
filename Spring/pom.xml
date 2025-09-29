@@ -23,6 +23,8 @@
         <jdbc.postgres.version>42.7.7</jdbc.postgres.version>
         <mzt.bizlog.version>3.0.6</mzt.bizlog.version>
         <logbook.version>3.12.2</logbook.version>
+        <commons.lang3.version>3.18.0</commons.lang3.version>
+        <commons.collections4.version>4.5.0</commons.collections4.version>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +78,17 @@
             <groupId>org.zalando</groupId>
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>${logbook.version}</version>
+        </dependency>
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons.collections4.version}</version>
         </dependency>
         <!-- Test scope dependencies -->
         <dependency>
