@@ -1,20 +1,27 @@
 package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.anyline.data.param.AggregationBuilder;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.entity.Aggregation;
+import org.anyline.entity.AggregationConfig;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.metadata.Catalog;
-import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
+import org.postgresql.util.PGInterval;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import java.sql.Driver;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,17 +30,19 @@ import java.util.regex.Pattern;
 @SpringBootApplication
 public class ApplicationMain {
 
+    static AnylineService<?> temporary;
+
     public static void main(String[] args) throws Exception {
         SpringApplication application = new SpringApplication(ApplicationMain.class);
         application.run(args);
         // 0.准备数据源信息
         String jdbcString = """
                 {
-                    "host": "1.1.1.1",
+                    "host": "localhost",
                     "port": 5432,
-                    "database": "",
+                    "database": "db",
                     "username": "postgres",
-                    "password": ""
+                    "password": "dbpassword"
                 }
                 """;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -42,9 +51,6 @@ public class ApplicationMain {
         // 1. 解析数据库
         DatabaseType databaseType = parseDatabaseType("PostgreSQL");
         // 2. 初始化Driver
-        String driverName = databaseType.driver();
-        Class<? extends Driver> driverClass = (Class<? extends Driver>) Class.forName(driverName);
-        Driver driver = driverClass.getDeclaredConstructor().newInstance();
         String urlTemplate = databaseType.url(); // jdbc:postgresql://{host}:{port:5432}/{database}}
         ///由于Anyline对PostgreSQL系的JDBC URL拼写多了个'}',需要对其进行特殊判断
         if ("org.postgresql.Driver".equals(databaseType.driver())) {
@@ -65,38 +71,66 @@ public class ApplicationMain {
         // 4. 构造一次性DataSource
         String username = (String) properties.get("username");
         String password = (String) properties.get("password");
-        SimpleDriverDataSource datasource = new SimpleDriverDataSource(
-                driver,
+        SingleConnectionDataSource datasource = new SingleConnectionDataSource(
                 url,
                 username,
-                password
+                password,
+                true
         );
-        AnylineService<?> temporary = ServiceProxy.temporary(datasource);
+        temporary = ServiceProxy.temporary(datasource);
         // 5. 测试连通性
         System.out.println(String.format("========================================="));
         boolean validity = temporary.validity();
         boolean hit = temporary.hit();
-        if (validity && hit) {
+        if (validity || hit) {
             System.out.println("连接测试成功！");
         } else {
             System.out.println("连接测试失败");
         }
-        // 6. 获取 Schema => Catalog => Table => Column
-        Schema schema = temporary.metadata().schema();
+        // 6. 获取 Catalog => Schema => Table => Column
         Catalog catalog = temporary.metadata().catalog();
-        Table table = temporary.metadata().table("metadata_datasource");
-        System.out.println(String.format("SCHEMA:\t%s,\nCATALOG:\t%s,\nTABLE: \t%s", schema.getName(), catalog.getName(), table.getName()));
+        Schema schema = temporary.metadata().schema();
+        Table table = temporary.metadata().table("flow_execution_log");
+//        Map<String, View> views = temporary.metadata().views();
+//        System.out.println(String.format("SCHEMA:\t%s,\nCATALOG:\t%s,\nTABLE: \t%s", schema.getName(), catalog.getName(), table.getName()));
 
-        Map<String, Object> columns = table.getColumns();
-        for (String columnName : columns.keySet()) {
-            Column column = (Column) columns.get(columnName);
-            System.out.println("\t" + column.toString());
-        }
-        System.out.println(String.format("========================================="));
-        System.out.println("Done!");
-        System.exit(0);
+//        Map<String, Object> columns = table.getColumns();
+//        for (String columnName : columns.keySet()) {
+//            Column column = (Column) columns.get(columnName);
+////            System.out.println("\t" + column.toString());
+//        }
+//        System.out.println(String.format("========================================="));
+//        System.out.println("Done!");
+
+        ConfigStore cs = new DefaultConfigStore();
+        cs.ge("start_time", LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0));
+        cs.le("start_time", LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999999999));
+
+        DataSet querys = temporary.aggregation(table)
+                .configs(cs)
+                .aggregation(Aggregation.SUM, "CASE execution_result WHEN 'success' THEN 1 ELSE 0 END", "success_count")
+                .aggregation(Aggregation.SUM, "CASE execution_result WHEN 'failed' THEN 1 ELSE 0 END", "fail_count")
+                .aggregation(Aggregation.AVG, "end_time - start_time", "avg_duration")
+                .querys();
+
+        List<DataRow> rows = querys.getRows();
+        Object o = rows.get(0).get("avg_duration");
+
+        int avgDuration = ((PGInterval) querys.getRows().get(0).get("avg_duration")).getMicroSeconds();
+        System.exit(1);
     }
 
+    public static DataRow aggregation(Table table,
+                                      ConfigStore configs,
+                                      AggregationConfig... aggConfigs) {
+        AggregationBuilder aggBuilder = temporary.aggregation(table)
+                .configs(configs);
+        for (AggregationConfig aggConfig : aggConfigs) {
+            aggBuilder = aggBuilder.aggregation(aggConfig.getAggregation(), aggConfig.getField(), aggConfig.getAlias());
+        }
+        return aggBuilder.query();
+
+    }
 
     private static DatabaseType parseDatabaseType(String databaseType) {
         if (databaseType == null || databaseType.isBlank()) {

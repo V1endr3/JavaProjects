@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/db
+    username: postgres
+    password: dbpassword
+
+anyline:
+  is-debug: false
+  is-log_sql: false
+  is-log_sql_warn: false
+  is-log-sql: false
+  is-log-sql-when-error: true
+  is-log-sql-time: false
+  is-log-sql-param: false
+  is-log-sql-param-when-error: false
+  is-log-slow-sql: false
