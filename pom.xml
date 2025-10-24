@@ -26,6 +26,7 @@
         <module>Spring</module>
         <module>SpringAI</module>
         <module>Anyline</module>
+        <module>Flink</module>
     </modules>
 
     <dependencyManagement>
