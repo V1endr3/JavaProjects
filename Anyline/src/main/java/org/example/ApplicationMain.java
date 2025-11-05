@@ -3,25 +3,21 @@ package org.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anyline.data.param.AggregationBuilder;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.TableBuilder;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.entity.Aggregation;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.AggregationConfig;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.metadata.Catalog;
-import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
-import org.postgresql.util.PGInterval;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,9 +36,9 @@ public class ApplicationMain {
                 {
                     "host": "localhost",
                     "port": 5432,
-                    "database": "db",
+                    "database": "onebase_cloud_v3",
                     "username": "postgres",
-                    "password": "dbpassword"
+                    "password": "123456"
                 }
                 """;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -87,36 +83,26 @@ public class ApplicationMain {
         } else {
             System.out.println("连接测试失败");
         }
-        // 6. 获取 Catalog => Schema => Table => Column
-        Catalog catalog = temporary.metadata().catalog();
-        Schema schema = temporary.metadata().schema();
-        Table table = temporary.metadata().table("flow_execution_log");
-//        Map<String, View> views = temporary.metadata().views();
-//        System.out.println(String.format("SCHEMA:\t%s,\nCATALOG:\t%s,\nTABLE: \t%s", schema.getName(), catalog.getName(), table.getName()));
-
-//        Map<String, Object> columns = table.getColumns();
-//        for (String columnName : columns.keySet()) {
-//            Column column = (Column) columns.get(columnName);
-////            System.out.println("\t" + column.toString());
-//        }
-//        System.out.println(String.format("========================================="));
-//        System.out.println("Done!");
-
+        Long roleId = 6943244133695489L;
         ConfigStore cs = new DefaultConfigStore();
-        cs.ge("start_time", LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0));
-        cs.le("start_time", LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999999999));
+        cs.param("roleId", roleId);
+        cs.page(1, 50);
 
-        DataSet querys = temporary.aggregation(table)
-                .configs(cs)
-                .aggregation(Aggregation.SUM, "CASE execution_result WHEN 'success' THEN 1 ELSE 0 END", "success_count")
-                .aggregation(Aggregation.SUM, "CASE execution_result WHEN 'failed' THEN 1 ELSE 0 END", "fail_count")
-                .aggregation(Aggregation.AVG, "end_time - start_time", "avg_duration")
-                .querys();
+        RunPrepare userPrepare = TableBuilder.init("app_auth_role_user AS aaru")
+                .inner("system_users AS u",
+                        "aaru.user_id = u.id",
+                        "aaru.deleted = 0",
+                        "u.deleted = 0")
+                .select("aaru.id", "aaru.role_id AS member_id", "u.nickname as member_name", "'user' as member_type", "aaru.update_time")
+                .build();
+        RunPrepare deptPrepare = TableBuilder.init("app_auth_role_dept AS aard")
+                .inner("system_dept AS d",
+                        "aard.dept_id = d.id", "aard.deleted = 0", "d.deleted = 0")
+                .select("aard.id", "aard.dept_id AS member_id", "d.name as member_name", "'dept' as member_type", "aard.update_time")
+                .build();
+        RunPrepare unioned = userPrepare.unionAll(deptPrepare);
 
-        List<DataRow> rows = querys.getRows();
-        Object o = rows.get(0).get("avg_duration");
-
-        int avgDuration = ((PGInterval) querys.getRows().get(0).get("avg_duration")).getMicroSeconds();
+        DataSet querys = temporary.querys(unioned, cs);
         System.exit(1);
     }
 
