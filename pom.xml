@@ -27,6 +27,10 @@
         <module>SpringAI</module>
         <module>Anyline</module>
         <module>Flink</module>
+        <module>Calcite</module>
+        <module>JOOQ</module>
+        <module>SchemaCrawler</module>
+        <module>gRPC</module>
     </modules>
 
     <dependencyManagement>
