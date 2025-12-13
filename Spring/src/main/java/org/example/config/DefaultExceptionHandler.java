@@ -1,7 +1,7 @@
 package org.example.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.Response;
+import org.example.entity.Response;
 import org.example.util.AppException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

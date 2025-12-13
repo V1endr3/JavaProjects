@@ -1,4 +1,4 @@
-package org.example.model.node;
+package org.example.entity.node;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

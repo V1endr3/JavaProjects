@@ -1,4 +1,4 @@
-package org.example.model.node;
+package org.example.entity.node;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NodeData {
+
+public class DataSample1 extends AbstractData {
     @Getter
     @Setter
     private List<Object> filterCondition;

@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.model.User;
+import org.example.entity.User;
 import org.example.repo.UserRepository;
 import org.example.util.AppException;
 import org.springframework.beans.factory.annotation.Autowired;

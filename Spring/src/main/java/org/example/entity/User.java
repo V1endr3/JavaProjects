@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.entity;
 
 import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.keygen.KeyGenerators;

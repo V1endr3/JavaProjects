@@ -1,9 +1,12 @@
 package org.example.jooq;
 
 import org.jooq.DSLContext;
+import org.jooq.JoinType;
 import org.jooq.Param;
 import org.jooq.SQLDialect;
 import org.jooq.conf.ParamType;
+import org.jooq.conf.RenderOptionalKeyword;
+import org.jooq.conf.Settings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +20,10 @@ public class JOOQTest {
 
     @BeforeEach
     public void init() {
-        dsl = using(SQLDialect.DEFAULT);
+        Settings settings = new Settings()
+                .withRenderFormatted(true)
+                .withRenderOptionalOuterKeyword(RenderOptionalKeyword.ON);
+        dsl = using(SQLDialect.DEFAULT, settings);
     }
 
     @Test
@@ -150,12 +156,12 @@ public class JOOQTest {
                         field("user_id", String.class).as("id"),
                         field("user_name", String.class).as("name")
                 ).from(table("table1").as("t1"))
-                .$where(
+                .where(
                         and(
                                 field("user_id").ge(0),
                                 field("user_name").likeIgnoreCase("%abc%")
-
-                        ));
+                        ))
+                .limit(50).offset(1);
 
         Map<String, Param<?>> params = fromSQL.getParams();
         System.out.println(fromSQL.getBindValues());

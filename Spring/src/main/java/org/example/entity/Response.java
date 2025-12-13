@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.entity;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

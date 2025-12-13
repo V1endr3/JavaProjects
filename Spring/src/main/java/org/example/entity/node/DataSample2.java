@@ -1,4 +1,4 @@
-package org.example.model.node;
+package org.example.entity.node;
 
 import lombok.Data;
 
