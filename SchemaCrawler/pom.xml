@@ -15,9 +15,62 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <schemacrawler.version>17.1.7</schemacrawler.version>
+        <hikari-cp.version>7.0.2</hikari-cp.version>
+
+        <jdbc.postgresql.version>42.7.8</jdbc.postgresql.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>us.fatehi</groupId>
+            <artifactId>schemacrawler-api</artifactId>
+            <version>${schemacrawler.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>us.fatehi</groupId>
+            <artifactId>schemacrawler-utility</artifactId>
+            <version>${schemacrawler.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>us.fatehi</groupId>
+            <artifactId>schemacrawler-tools</artifactId>
+            <version>${schemacrawler.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>us.fatehi</groupId>
+            <artifactId>schemacrawler-jdbc-drivers</artifactId>
+            <version>${schemacrawler.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>us.fatehi</groupId>
+            <artifactId>schemacrawler-postgresql</artifactId>
+            <version>${schemacrawler.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikari-cp.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${jdbc.postgresql.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

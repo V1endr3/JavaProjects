@@ -1,6 +1,11 @@
 spring:
+  # 数据源配置项
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/db_test
-    username: postgres
-    password: test123
+    driver-class-name: com.kingbase8.Driver
+    url: jdbc:kingbase8://10.11.135.7:15432/cloud_v3
+    username: system
+    password: 3er4#ER$
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 20
